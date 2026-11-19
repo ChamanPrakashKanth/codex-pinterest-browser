@@ -1,0 +1,11 @@
+[
+  {
+    "imagePath": "city-bike.jpg",
+    "title": "Green city bicycle against a brick wall",
+    "description": "A green city bicycle beside a red brick wall, with a rear rack and upright handlebars.",
+    "altText": "Green bicycle with a rear rack leaning against a red brick wall.",
+    "destinationUrl": "https://example.org/city-cycling",
+    "board": "City cycling",
+    "publishingMode": "dry-run"
+  }
+]

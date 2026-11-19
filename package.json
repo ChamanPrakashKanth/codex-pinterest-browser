@@ -1,0 +1,24 @@
+{
+  "name": "codex-pinterest-browser",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Prepare Pinterest image pins in Chrome or Edge for human approval",
+  "type": "module",
+  "license": "MIT",
+  "engines": {
+    "node": ">=22.13"
+  },
+  "scripts": {
+    "bridge": "node bridge/server.js",
+    "pin": "node scripts/pin.js",
+    "test": "node --test tests/bridge.test.js",
+    "test:browser": "playwright test",
+    "check": "node scripts/check.js"
+  },
+  "dependencies": {
+    "sharp": "^0.35.5"
+  },
+  "devDependencies": {
+    "@playwright/test": "^1.65.1"
+  }
+}

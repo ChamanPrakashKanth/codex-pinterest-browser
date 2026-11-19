@@ -1,0 +1,75 @@
+<!doctype html>
+<html lang="en">
+<head><meta charset="utf-8"><title>Create Pin</title></head>
+<body>
+<h1>Create Pin</h1>
+<div data-test-id="pin-draft-media-upload">
+  <input type="file" accept="image/jpeg,image/png,image/webp" aria-label="Image">
+  <div data-test-id="pin-draft-media-preview"></div>
+  <p data-test-id="media-upload-error" hidden>Upload failed</p>
+</div>
+<label>Title <input aria-label="Title"></label>
+<div id="description" contenteditable="true" role="textbox" aria-label="Description" style="min-height:24px"></div>
+<label>Link <input aria-label="Link"></label>
+<button data-test-id="board-dropdown-select-button">Choose a board</button>
+<div role="listbox" hidden>
+  <button role="option">City cycling</button>
+  <button role="option">Cycling Routes</button>
+</div>
+<button id="more">More options</button>
+<label id="alt" hidden>Alt text <textarea aria-label="Alt text"></textarea></label>
+<button id="publish" disabled>Publish</button>
+<div role="status"></div>
+<script>
+  const picker = document.querySelector('input[type=file]');
+  const preview = document.querySelector('[data-test-id="pin-draft-media-preview"]');
+  const board = document.querySelector('[data-test-id="board-dropdown-select-button"]');
+  const list = document.querySelector('[role=listbox]');
+  const publish = document.querySelector('#publish');
+  window.publishClicks = 0;
+  window.fileName = '';
+  picker.addEventListener('change', () => {
+    const file = picker.files[0];
+    window.fileName = file.name;
+    const progress = document.createElement('div');
+    progress.role = 'progressbar';
+    progress.textContent = 'Uploading';
+    preview.append(progress);
+    requestAnimationFrame(() => {
+      progress.remove();
+      if (file.name === 'reject.png') {
+        document.querySelector('[data-test-id="media-upload-error"]').hidden = false;
+        return;
+      }
+      const img = new Image();
+      img.alt = 'Pin preview';
+      img.src = URL.createObjectURL(file);
+      img.onload = () => { publish.disabled = false; };
+      preview.append(img);
+    });
+  });
+  board.addEventListener('click', () => { list.hidden = !list.hidden; });
+  for (const option of list.children) {
+    option.addEventListener('click', () => {
+      board.textContent = option.textContent;
+      list.hidden = true;
+    });
+  }
+  document.querySelector('#more').addEventListener('click', () => { document.querySelector('#alt').hidden = false; });
+  publish.addEventListener('click', () => {
+    window.publishClicks++;
+    const outcome = document.querySelector('[role=status]');
+    if (window.fileName === 'uncertain.jpeg') {
+      outcome.role = 'alert';
+      outcome.textContent = 'Something went wrong';
+    } else {
+      outcome.textContent = 'You created a Pin! ';
+      const link = document.createElement('a');
+      link.href = '/pin/987654/';
+      link.textContent = 'See your Pin';
+      outcome.append(link);
+    }
+  });
+</script>
+</body>
+</html>

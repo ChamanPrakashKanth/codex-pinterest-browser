@@ -1,0 +1,24 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Pinterest pin review</title>
+  <link rel="stylesheet" href="review.css">
+  <script type="module" src="review.js"></script>
+</head>
+<body>
+  <main>
+    <h1>Pinterest pin review</h1>
+    <form id="pair">
+      <label for="code">Bridge pairing code</label>
+      <div class="actions">
+        <input id="code" type="password" autocomplete="off" required pattern="[a-f0-9]{64}">
+        <button type="submit">Connect</button>
+      </div>
+    </form>
+    <p id="status" role="status"></p>
+    <div id="pins"></div>
+  </main>
+</body>
+</html>
