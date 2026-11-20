@@ -5,11 +5,11 @@
   "version": "0.1.0",
   "minimum_chrome_version": "120",
   "permissions": ["storage"],
-  "host_permissions": ["http://127.0.0.1/*", "https://www.pinterest.com/*"],
+  "host_permissions": ["http://127.0.0.1/*", "https://www.pinterest.com/*", "https://in.pinterest.com/*"],
   "background": { "service_worker": "background.js", "type": "module" },
   "action": { "default_title": "Open Pinterest review" },
   "content_scripts": [{
-    "matches": ["https://www.pinterest.com/pin-creation-tool/*", "https://www.pinterest.com/pin-builder/*"],
+    "matches": ["https://www.pinterest.com/pin-creation-tool/*", "https://www.pinterest.com/pin-builder/*", "https://in.pinterest.com/pin-creation-tool/*", "https://in.pinterest.com/pin-builder/*"],
     "js": ["pinterest-adapter.js", "content.js"],
     "run_at": "document_idle",
     "all_frames": false
