@@ -52,7 +52,7 @@
   const fail = code => { throw new AdapterError(code); };
 
   function checkPage() {
-    if (location.origin !== 'https://www.pinterest.com' ||
+    if (!['https://www.pinterest.com', 'https://in.pinterest.com'].includes(location.origin) ||
         !/^\/pin-(?:creation-tool|builder)(?:\/|$)/.test(location.pathname)) fail('WRONG_PAGE');
     if (visibleMatches(selectors.challenge).length ||
         visibleMatches('h1,h2,[role="heading"],[role="alert"]').some(item =>
@@ -271,7 +271,7 @@
     for (const notice of visibleMatches(selectors.success)) {
       if (!/^(?:you (?:successfully )?(?:created|published|saved) (?:a|your|this) pin|(?:your )?pin (?:was |has been )?(?:published|created|saved)|successfully published)\b/i.test(clean(notice.innerText))) continue;
       for (const link of visibleMatches('a[href]', notice)) {
-        if (/^https:\/\/www\.pinterest\.com\/pin\/\d+\/?(?:[?#].*)?$/.test(link.href)) {
+        if (/^https:\/\/(?:www|in)\.pinterest\.com\/pin\/\d+\/?(?:[?#].*)?$/.test(link.href)) {
           links.add('https://www.pinterest.com' + new URL(link.href).pathname.replace(/\/?$/, '/'));
         }
       }
