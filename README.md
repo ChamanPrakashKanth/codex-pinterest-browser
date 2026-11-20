@@ -73,7 +73,7 @@ The extension opens one Pinterest composer tab per queued pin and prepares them 
 | Bridge offline or pairing rejected | Check the running bridge, the extension ID in the active browser profile, and the latest pairing code. |
 | Queue stays pending | Open the paired review tab and keep it available while jobs run. Browsers can throttle background tabs. |
 | `CHALLENGE` | Complete login or the security check in your browser, then retry the draft. |
-| `FORM_LAYOUT`, `UPLOAD_TIMEOUT`, or `WRONG_PAGE` | Inspect the composer tab. The adapter targets the English desktop composer at `www.pinterest.com`; layouts, localized sites, and account variants can differ. |
+| `FORM_LAYOUT`, `UPLOAD_TIMEOUT`, or `WRONG_PAGE` | Inspect the composer tab. The adapter supports the English desktop composer at `www.pinterest.com` and `in.pinterest.com`; other localized sites, layouts, and account variants can differ. It uses the host of an already-open Pinterest tab when available. |
 | `BOARD_NOT_FOUND` or `AMBIGUOUS_BOARD` | Confirm the exact board name and whether it appears in the picker. Board creation, sections, and virtualized rows outside the rendered list may need manual handling. |
 | `COMPOSER_NOT_CLEAN` | Inspect existing site drafts and address them manually. The extension avoids overwriting a prefilled composer. |
 | `uncertain` | Check the board manually. A redirect, timeout, or error after the click can leave the result ambiguous. Use reconciliation only after finding the actual pin URL. |
