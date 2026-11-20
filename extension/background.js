@@ -1,7 +1,10 @@
 const bridge = 'http://127.0.0.1:43179/browser/';
-const builder = 'https://www.pinterest.com/pin-creation-tool/';
+const defaultOrigin = 'https://www.pinterest.com';
+const pinterestOrigins = new Set([defaultOrigin, 'https://in.pinterest.com']);
+const builderPath = '/pin-creation-tool/';
 const dashboard = chrome.runtime.getURL('review.html');
-const builderUrl = /^https:\/\/www\.pinterest\.com\/pin-(?:creation-tool|builder)\/(?:[?#].*)?$/;
+const builderUrl = /^https:\/\/(?:www|in)\.pinterest\.com\/pin-(?:creation-tool|builder)\/(?:[?#].*)?$/;
+const challengeUrl = /^https:\/\/(?:www|in)\.pinterest\.com\/(?:login|signup|challenge|security)(?:[/?#]|$)/;
 const faults = new Set(['CHALLENGE', 'WRONG_PAGE', 'COMPOSER_NOT_CLEAN', 'FORM_LAYOUT',
   'UPLOAD_FAILED', 'UPLOAD_TIMEOUT', 'BOARD_NOT_FOUND', 'AMBIGUOUS_BOARD', 'FIELD_MISMATCH',
   'FORM_ERROR', 'NAVIGATION_FAILED', 'BROWSER_INTERRUPTED']);
@@ -51,7 +54,7 @@ async function probe(tabId) {
     const tab = await chrome.tabs.get(tabId).catch(() => { throw fault('NAVIGATION_FAILED'); });
     if (tab.status === 'complete' && tab.url && tab.url !== 'about:blank' && !builderUrl.test(tab.url) &&
         !builderUrl.test(tab.pendingUrl ?? '')) {
-      if (/^https:\/\/www\.pinterest\.com\/(?:login|signup|challenge|security)(?:[/?#]|$)/.test(tab.url ?? '')) {
+      if (challengeUrl.test(tab.url ?? '')) {
         throw fault('CHALLENGE');
       }
       throw fault('WRONG_PAGE');
@@ -68,10 +71,21 @@ async function probe(tabId) {
   throw fault('NAVIGATION_FAILED');
 }
 
+async function composerUrl() {
+  const tabs = await chrome.tabs.query({ url: [...pinterestOrigins].map(origin => origin + '/*') });
+  const source = tabs.find(tab => tab.active) ?? tabs[0];
+  let origin = defaultOrigin;
+  try {
+    const candidate = new URL(source?.url ?? defaultOrigin).origin;
+    if (pinterestOrigins.has(candidate)) origin = candidate;
+  } catch { /* Use the default host when no signed-in Pinterest tab is open. */ }
+  return origin + builderPath;
+}
+
 async function openComposer() {
   const tab = await chrome.tabs.create({ url: 'about:blank', active: false });
   try {
-    await chrome.tabs.update(tab.id, { url: builder });
+    await chrome.tabs.update(tab.id, { url: await composerUrl() });
     return tab.id;
   } catch {
     await chrome.tabs.remove(tab.id).catch(() => {});
